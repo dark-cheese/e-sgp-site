@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>e-SGP - Locais</title>
+    
+    <!-- Ícones -->
+    <link rel="stylesheet" href="../fonts/css/all.min.css">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/locais.css">
+</head>
+<body>
+    <div class="dashboard">
+        <aside class="sidebar">
+            <div class="logo-area">
+                <div class="logo-icon">
+                    <i class="fas fa-building"></i>
+                </div>
+                <div class="logo-text">
+                    <h2>e-SGP</h2>
+                </div>
+            </div>
+
+            <nav class="menu">
+                <a href="dashboard.html" class="menu-item"><i class="fas fa-home"></i> Dashboard</a>
+                <a href="secretarias.html" class="menu-item"><i class="fas fa-landmark"></i> Secretarias</a>
+                <a href="unidades.html" class="menu-item"><i class="fas fa-school"></i> Unidades</a>
+                <a href="locais.html" class="menu-item active"><i class="fas fa-door-open"></i> Locais</a>
+                <a href="itens.html" class="menu-item"><i class="fas fa-boxes"></i> Patrimônio</a>
+            </nav>
+
+            <div class="user-info">
+                <div class="user-avatar">AD</div>
+                <div>
+                    <h4>Admin</h4>
+                    <p style="font-size: 11px;">admin@prefeitura.br</p>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="header">
+                <div>
+                    <h1>Locais</h1>
+                    <div class="breadcrumb">
+                        <a href="secretarias.html">Educação</a>
+                        <i class="fas fa-chevron-right"></i>
+                        <a href="unidades.html">E.M. Pedro</a>
+                        <i class="fas fa-chevron-right"></i>
+                        <span>Locais</span>
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="window.location.href='novo-local.html'">
+                    <i class="fas fa-plus"></i> Novo
+                </button>
+            </header>
+
+            <div class="unidade-header">
+                <div class="unidade-icon">
+                    <i class="fas fa-school"></i>
+                </div>
+                <div class="unidade-info">
+                    <h3>Escola Municipal Pedro Álvares</h3>
+                    <p><i class="fas fa-map-marker-alt"></i> Rua das Flores, 123 - Centro</p>
+                    <p><i class="fas fa-user"></i> Diretora Maria Silva</p>
+                    <div class="local-stats">
+                        <span><i class="fas fa-door-open"></i> 12 locais</span>
+                        <span><i class="fas fa-boxes"></i> 345 itens</span>
+                    </div>
+                </div>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Local</th>
+                        <th>Responsável</th>
+                        <th>Itens</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><i class="fas fa-door-open"></i> Sala 1 - 1º Ano</td>
+                        <td>Professora Ana</td>
+                        <td>32</td>
+                        <td>
+                            <button class="action-btn" onclick="window.location.href='itens.html'"><i class="fas fa-eye"></i></button>
+                            <button class="action-btn"><i class="fas fa-edit"></i></button>
+                            <button class="action-btn"><i class="fas fa-tag"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><i class="fas fa-door-open"></i> Sala 2 - 2º Ano</td>
+                        <td>Professor Carlos</td>
+                        <td>28</td>
+                        <td>
+                            <button class="action-btn" onclick="window.location.href='itens.html'"><i class="fas fa-eye"></i></button>
+                            <button class="action-btn"><i class="fas fa-edit"></i></button>
+                            <button class="action-btn"><i class="fas fa-tag"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><i class="fas fa-door-open"></i> Sala de Informática</td>
+                        <td>Técnico Pedro</td>
+                        <td>45</td>
+                        <td>
+                            <button class="action-btn" onclick="window.location.href='itens.html'"><i class="fas fa-eye"></i></button>
+                            <button class="action-btn"><i class="fas fa-edit"></i></button>
+                            <button class="action-btn"><i class="fas fa-tag"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><i class="fas fa-door-open"></i> Biblioteca</td>
+                        <td>Professora Lúcia</td>
+                        <td>120</td>
+                        <td>
+                            <button class="action-btn" onclick="window.location.href='itens.html'"><i class="fas fa-eye"></i></button>
+                            <button class="action-btn"><i class="fas fa-edit"></i></button>
+                            <button class="action-btn"><i class="fas fa-tag"></i></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </main>
+    </div>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/utils.js"></script>
+</body>
+</html>

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>e-SGP - Novo Item</title>
+    
+    <!-- Ícones -->
+    <link rel="stylesheet" href="../fonts/css/all.min.css">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/novo-item.css">
+</head>
+<body>
+    <div class="dashboard">
+        <aside class="sidebar">
+            <div class="logo-area">
+                <div class="logo-icon">
+                    <i class="fas fa-building"></i>
+                </div>
+                <div class="logo-text">
+                    <h2>e-SGP</h2>
+                </div>
+            </div>
+
+            <nav class="menu">
+                <a href="dashboard.html" class="menu-item"><i class="fas fa-home"></i> Dashboard</a>
+                <a href="secretarias.html" class="menu-item"><i class="fas fa-landmark"></i> Secretarias</a>
+                <a href="unidades.html" class="menu-item"><i class="fas fa-school"></i> Unidades</a>
+                <a href="locais.html" class="menu-item"><i class="fas fa-door-open"></i> Locais</a>
+                <a href="itens.html" class="menu-item active"><i class="fas fa-boxes"></i> Patrimônio</a>
+            </nav>
+
+            <div class="user-info">
+                <div class="user-avatar">AD</div>
+                <div>
+                    <h4>Admin</h4>
+                    <p style="font-size: 11px;">admin@prefeitura.br</p>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="header">
+                <div>
+                    <h1>Novo Item</h1>
+                    <div class="breadcrumb">
+                        <a href="itens.html">Patrimônio</a>
+                        <i class="fas fa-chevron-right"></i>
+                        <span>Novo Item</span>
+                    </div>
+                </div>
+            </header>
+
+            <div class="card">
+                <form onsubmit="event.preventDefault(); alert('Item salvo!'); window.location.href='itens.html'">
+                    <!-- Dados Básicos -->
+                    <div class="form-section">
+                        <h3><i class="fas fa-info-circle"></i> Dados Básicos</h3>
+                        
+                        <div class="form-group">
+                            <label>Nº Patrimônio</label>
+                            <input type="text" value="Gerado automaticamente" class="readonly-field" readonly>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Descrição <span style="color: var(--vermelho);">*</span></label>
+                            <input type="text" placeholder="Ex: Computador Desktop" required>
+                        </div>
+                        
+                        <div class="form-row-tres-colunas">
+                            <div class="form-group">
+                                <label>Marca</label>
+                                <input type="text" placeholder="Ex: Dell">
+                            </div>
+                            <div class="form-group">
+                                <label>Modelo</label>
+                                <input type="text" placeholder="Ex: Optiplex">
+                            </div>
+                            <div class="form-group">
+                                <label>Nº Série</label>
+                                <input type="text" placeholder="Ex: 123ABC">
+                            </div>
+                        </div>
+                        
+                        <div class="form-row-duas-colunas">
+                            <div class="form-group">
+                                <label>Estado <span style="color: var(--vermelho);">*</span></label>
+                                <select required>
+                                    <option value="">Selecione...</option>
+                                    <option value="otimo">Ótimo</option>
+                                    <option value="bom">Bom</option>
+                                    <option value="regular">Regular</option>
+                                    <option value="ruim">Ruim</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Observações</label>
+                                <input type="text" placeholder="Observações relevantes">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Localização -->
+                    <div class="form-section">
+                        <h3><i class="fas fa-map-marker-alt"></i> Localização</h3>
+                        
+                        <div class="form-row-duas-colunas">
+                            <div class="form-group">
+                                <label>Secretaria <span style="color: var(--vermelho);">*</span></label>
+                                <select required>
+                                    <option value="">Selecione...</option>
+                                    <option value="educacao" selected>Educação</option>
+                                    <option value="saude">Saúde</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Unidade <span style="color: var(--vermelho);">*</span></label>
+                                <select required>
+                                    <option value="">Selecione...</option>
+                                    <option value="em-pedro" selected>E.M. Pedro Álvares</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row-duas-colunas">
+                            <div class="form-group">
+                                <label>Local <span style="color: var(--vermelho);">*</span></label>
+                                <select required>
+                                    <option value="">Selecione...</option>
+                                    <option value="sala1" selected>Sala 1 - 1º Ano</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Responsável <span style="color: var(--vermelho);">*</span></label>
+                                <select required>
+                                    <option value="">Selecione...</option>
+                                    <option value="ana" selected>Prof. Ana</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Aquisição -->
+                    <div class="form-section">
+                        <h3><i class="fas fa-file-invoice"></i> Aquisição</h3>
+                        
+                        <div class="form-row-tres-colunas">
+                            <div class="form-group">
+                                <label>Data Aquisição</label>
+                                <input type="date">
+                            </div>
+                            <div class="form-group">
+                                <label>Valor (R$)</label>
+                                <input type="number" step="0.01" placeholder="0,00">
+                            </div>
+                            <div class="form-group">
+                                <label>Nº Nota Fiscal</label>
+                                <input type="text" placeholder="NF-2026-001">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Anexos -->
+                    <div class="form-section">
+                        <h3><i class="fas fa-paperclip"></i> Anexos</h3>
+                        
+                        <div class="upload-area" onclick="alert('Upload de imagem')">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p><strong>Clique para adicionar foto</strong></p>
+                            <p style="color: var(--cinza); font-size: 12px;">PNG, JPG até 5MB</p>
+                        </div>
+                    </div>
+
+                    <!-- Botões -->
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-outline" onclick="window.location.href='itens.html'">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Salvar Item</button>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/utils.js"></script>
+</body>
+</html>
