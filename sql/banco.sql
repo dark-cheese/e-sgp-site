@@ -4,12 +4,12 @@ USE e_sgp;
 
 -- Tabela para gerenciar os usuários do sistema
 CREATE TABLE usuarios (
-    id INT AUTO_INCREMENT,
+    id INT AUTO_INCREMENT, -- Gera um numero unico para cada usuario
     nome VARCHAR(100) NOT NULL,
-    email VARCHAR(100) NOT NULL UNIQUE,
+    email VARCHAR(100) NOT NULL UNIQUE, -- Limita o email para ser unico no sistema
     senha VARCHAR(255) NOT NULL,
-    nivel ENUM('admin', 'gestor', 'usuario') DEFAULT 'usuario',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
+    nivel ENUM('admin', 'gestor', 'usuario') DEFAULT 'usuario', -- Nivel de usuario 
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Data de criação do usuario
     CONSTRAINT pk_usuarios PRIMARY KEY (id)
 );
 
@@ -73,7 +73,7 @@ CREATE TABLE itens (
     localId INT NOT NULL,       
     responsavelId INT,         
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, 
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- atualiza sozinho quando modifica
     CONSTRAINT pk_itens PRIMARY KEY (id),
     CONSTRAINT fk_itens_local FOREIGN KEY (localId) 
         REFERENCES locais(id)
