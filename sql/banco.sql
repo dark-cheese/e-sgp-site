@@ -1,7 +1,5 @@
--- ======================================================
 -- BANCO DE DADOS: e_sgp (Sistema de Gestão de Patrimônio)
--- ======================================================
-CREATE DATABASE IF NOT EXISTS e_sgp;
+CREATE DATABASE e_sgp;
 USE e_sgp;
 
 -- Tabela para gerenciar os usuários do sistema
@@ -11,11 +9,11 @@ CREATE TABLE usuarios (
     email VARCHAR(100) NOT NULL UNIQUE,
     senha VARCHAR(255) NOT NULL,
     nivel ENUM('admin', 'gestor', 'usuario') DEFAULT 'usuario',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
     CONSTRAINT pk_usuarios PRIMARY KEY (id)
 );
 
--- Tabela das secretarias municipais/estaduais
+-- Tabela das secretarias municipais
 CREATE TABLE secretarias (
     id INT AUTO_INCREMENT,
     nome VARCHAR(100) NOT NULL,
@@ -25,87 +23,87 @@ CREATE TABLE secretarias (
     CONSTRAINT pk_secretarias PRIMARY KEY (id)
 );
 
--- Tabela de unidades vinculadas às secretarias
+-- Tabela de unidades vinculadas as secretarias
 CREATE TABLE unidades (
     id INT AUTO_INCREMENT,
     nome VARCHAR(100) NOT NULL,
-    secretaria_id INT NOT NULL,
+    secretariaId INT NOT NULL,
     endereco TEXT,
     responsavel VARCHAR(100),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
     CONSTRAINT pk_unidades PRIMARY KEY (id),
-    CONSTRAINT fk_unidades_secretaria FOREIGN KEY (secretaria_id)
+    CONSTRAINT fk_unidades_secretaria FOREIGN KEY (secretariaId) 
         REFERENCES secretarias(id)
         ON UPDATE RESTRICT
         ON DELETE CASCADE
 );
 
--- Tabela de locais específicos dentro das unidades
+-- Tabela de locais especificos dentro das unidades
 CREATE TABLE locais (
     id INT AUTO_INCREMENT,
     nome VARCHAR(100) NOT NULL,
-    unidade_id INT NOT NULL,
-    responsavel_id INT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    unidadeId INT NOT NULL, 
+    responsavelId INT,      
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
     CONSTRAINT pk_locais PRIMARY KEY (id),
-    CONSTRAINT fk_locais_unidade FOREIGN KEY (unidade_id)
+    CONSTRAINT fk_locais_unidade FOREIGN KEY (unidadeId) 
         REFERENCES unidades(id)
         ON UPDATE RESTRICT
         ON DELETE CASCADE,
-    CONSTRAINT fk_locais_usuario FOREIGN KEY (responsavel_id)
+    CONSTRAINT fk_locais_usuario FOREIGN KEY (responsavelId) 
         REFERENCES usuarios(id)
         ON UPDATE RESTRICT
         ON DELETE SET NULL
 );
 
--- Tabela principal de itens de patrimônio
+-- Tabela principal de itens de patrimonio
 CREATE TABLE itens (
     id INT AUTO_INCREMENT,
-    numero_patrimonio VARCHAR(20) NOT NULL UNIQUE,
+    numeroPatrimonio VARCHAR(20) NOT NULL UNIQUE, 
     descricao TEXT NOT NULL,
     marca VARCHAR(50),
     modelo VARCHAR(50),
-    numero_serie VARCHAR(50),
+    numeroSerie VARCHAR(50), 
     estado ENUM('otimo', 'bom', 'regular', 'ruim', 'inservivel') DEFAULT 'bom',
-    data_aquisicao DATE,
+    dataAquisicao DATE,      
     valor DECIMAL(10,2),
-    nota_fiscal VARCHAR(50),
+    notaFiscal VARCHAR(50),  
     foto VARCHAR(255),
     observacoes TEXT,
-    local_id INT NOT NULL,
-    responsavel_id INT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    localId INT NOT NULL,       
+    responsavelId INT,         
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, 
     CONSTRAINT pk_itens PRIMARY KEY (id),
-    CONSTRAINT fk_itens_local FOREIGN KEY (local_id)
+    CONSTRAINT fk_itens_local FOREIGN KEY (localId) 
         REFERENCES locais(id)
         ON UPDATE RESTRICT
         ON DELETE CASCADE,
-    CONSTRAINT fk_itens_usuario FOREIGN KEY (responsavel_id)
+    CONSTRAINT fk_itens_usuario FOREIGN KEY (responsavelId) 
         REFERENCES usuarios(id)
         ON UPDATE RESTRICT
         ON DELETE SET NULL
 );
 
--- Tabela para histórico de movimentação dos bens
+-- Tabela para historico de movimentaçao dos bens
 CREATE TABLE movimentacoes (
     id INT AUTO_INCREMENT,
-    item_id INT NOT NULL,
+    itemId INT NOT NULL,
     tipo ENUM('criacao', 'transferencia', 'baixa', 'manutencao') NOT NULL,
-    local_origem_id INT,
-    local_destino_id INT,
+    localOrigemId INT,   
+    localDestinoId INT, 
     observacao TEXT,
-    data_movimentacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    dataMovimentacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
     CONSTRAINT pk_movimentacoes PRIMARY KEY (id),
-    CONSTRAINT fk_mov_item FOREIGN KEY (item_id)
+    CONSTRAINT fk_mov_item FOREIGN KEY (itemId) 
         REFERENCES itens(id)
         ON UPDATE RESTRICT
         ON DELETE CASCADE,
-    CONSTRAINT fk_mov_origem FOREIGN KEY (local_origem_id)
+    CONSTRAINT fk_mov_origem FOREIGN KEY (localOrigemId) 
         REFERENCES locais(id)
         ON UPDATE RESTRICT
         ON DELETE SET NULL,
-    CONSTRAINT fk_mov_destino FOREIGN KEY (local_destino_id)
+    CONSTRAINT fk_mov_destino FOREIGN KEY (localDestinoId) 
         REFERENCES locais(id)
         ON UPDATE RESTRICT
         ON DELETE SET NULL
