@@ -1,13 +1,29 @@
+# ============================================================
+# e-SGP (Sistema de Gestão de Patrimônio)
+# Backend em Python com Flask
+# ============================================================
+
 from datetime import date
 from flask import Flask, jsonify, request, send_from_directory
 import mysql.connector
 from mysql.connector import Error
 from config import DB_CONFIG
 
+# Inicializar a aplicação Flask
+# static_folder='.' permite servir arquivos HTML/CSS/JS do mesmo diretório
 app = Flask(__name__, static_folder='.', static_url_path='')
 
 
+
+# ============================================================
+# FUNÇÕES DE CONEXÃO E MANIPULAÇÃO DE BANCO DE DADOS
+# ============================================================
+
 def get_db_connection():
+    """
+    Estabelece conexão com o banco de dados MySQL.
+    Retorna: objeto de conexão ou None em caso de erro
+    """
     try:
         return mysql.connector.connect(
             host=DB_CONFIG['host'],
@@ -24,6 +40,10 @@ def get_db_connection():
 
 
 def query_all(conn, query, params=None):
+    """
+    Executa uma consulta SQL e retorna TODOS os resultados como lista de dicionários.
+    Parâmetros: conn (conexão), query (SQL), params (argumentos da query)
+    """
     cursor = conn.cursor(dictionary=True)
     cursor.execute(query, params or ())
     rows = cursor.fetchall()
@@ -32,6 +52,10 @@ def query_all(conn, query, params=None):
 
 
 def query_one(conn, query, params=None):
+    """
+    Executa uma consulta SQL e retorna apenas o PRIMEIRO resultado.
+    Parâmetros: conn (conexão), query (SQL), params (argumentos da query)
+    """
     cursor = conn.cursor(dictionary=True)
     cursor.execute(query, params or ())
     row = cursor.fetchone()
@@ -40,6 +64,10 @@ def query_one(conn, query, params=None):
 
 
 def execute_insert(conn, query, params=None):
+    """
+    Executa um INSERT/UPDATE/DELETE e faz commit automático.
+    Retorna: o ID da última linha inserida (lastrowid)
+    """
     cursor = conn.cursor()
     cursor.execute(query, params or ())
     conn.commit()
@@ -49,6 +77,10 @@ def execute_insert(conn, query, params=None):
 
 
 def register_history(conn, action, table_target, record_id, description):
+    """
+    Registra uma ação no histórico do sistema.
+    Parâmetros: ação (CRIAR/EDITAR/DELETAR), tabela afetada, ID do registro, descrição
+    """
     try:
         query = '''
             INSERT INTO historico (usuarioId, acao, tabelaAlvo, registroId, descricao, dataRegistro)
@@ -66,8 +98,17 @@ def register_history(conn, action, table_target, record_id, description):
         app.logger.error(f'Erro ao registrar histórico: {exc}')
 
 
+
+# ============================================================
+# MIDDLEWARE - CORS (Cross-Origin Resource Sharing)
+# ============================================================
+
 @app.after_request
 def add_cors_headers(response):
+    """
+    Adiciona headers CORS para permitir requisições de qualquer origem.
+    Isso permite que o frontend faça fetch para qualquer domínio.
+    """
     response.headers['Access-Control-Allow-Origin'] = '*'
     response.headers['Access-Control-Allow-Headers'] = 'Content-Type'
     response.headers['Access-Control-Allow-Methods'] = 'GET,POST,OPTIONS'
@@ -76,6 +117,10 @@ def add_cors_headers(response):
 
 @app.route('/api/<path:endpoint>', methods=['OPTIONS'])
 def handle_options(endpoint):
+    """
+    Trata requisições OPTIONS (preflight) do navegador.
+    Necessário para CORS funcionar corretamente.
+    """
     return '', 200
 
 
