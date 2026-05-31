@@ -16,6 +16,7 @@ INSERT INTO tipo_usuario (nome, descricao) VALUES
 ('gestor', 'Gestor da prefeitura, cria usuários comuns e estruturas'),
 ('usuario', 'Usuário comum, cadastra itens');
 
+
 -- Tabela para tipos de material (permanente ou consumo)
 CREATE TABLE tipo_material (
     id INTEGER AUTO_INCREMENT,
@@ -42,6 +43,8 @@ CREATE TABLE usuario (
         ON UPDATE RESTRICT
         ON DELETE RESTRICT
 );
+INSERT INTO usuario (nome, email, senha, tipoUsuarioId) VALUES
+('Isabella', 'admin@gmail.com', 'admin123', 1); -- Admin
 
 -- Tabela para responsáveis físicos ou servidores do patrimônio
 CREATE TABLE responsavel (
@@ -55,6 +58,8 @@ CREATE TABLE responsavel (
         ON UPDATE RESTRICT
         ON DELETE SET NULL
 );
+INSERT INTO responsavel (usuarioId, nome, cargo) VALUES (1, 'Isabella', 'Administrador do sistema');
+
 
 -- Tabela da secretaria municipal
 CREATE TABLE secretaria (
