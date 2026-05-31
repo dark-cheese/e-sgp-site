@@ -32,19 +32,20 @@ INSERT INTO tipo_material (nome, descricao) VALUES
 
 -- Tabela para gerenciar o usuário do sistema
 CREATE TABLE usuario (
-    id INT AUTO_INCREMENT, -- Antes: INT AUTO_INCREMENT
+    id INT AUTO_INCREMENT,
     nome VARCHAR(50) NOT NULL,
     email VARCHAR(64) NOT NULL UNIQUE,
     senha VARCHAR(255) NOT NULL,
-    tipoUsuarioId INTEGER NOT NULL, -- Antes: nivel
+    tipoUsuarioId INTEGER NOT NULL,
     CONSTRAINT pk_usuario PRIMARY KEY (id),
     CONSTRAINT fk_usuario_tipo FOREIGN KEY (tipoUsuarioId)
         REFERENCES tipo_usuario(id)
         ON UPDATE RESTRICT
         ON DELETE RESTRICT
 );
+
 INSERT INTO usuario (nome, email, senha, tipoUsuarioId) VALUES
-('Isabella', 'admin@gmail.com', 'admin123', 1); -- Admin
+('Isabella', 'admin@gmail.com', 'admin123', 1); -- Aqui o 1 aponta para o 'admin' -- Admin
 
 -- Tabela para responsáveis físicos ou servidores do patrimônio
 CREATE TABLE responsavel (
@@ -58,8 +59,9 @@ CREATE TABLE responsavel (
         ON UPDATE RESTRICT
         ON DELETE SET NULL
 );
-INSERT INTO responsavel (usuarioId, nome, cargo) VALUES (1, 'Isabella', 'Administrador do sistema');
 
+INSERT INTO responsavel (usuarioId, nome, cargo) VALUES 
+(1, 'Isabella', 'Administrador do sistema'); -- Vinculado ao id 1 da tabela usuario
 
 -- Tabela da secretaria municipal
 CREATE TABLE secretaria (
