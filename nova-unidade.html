@@ -145,8 +145,8 @@
         async function carregarOpcoesUnidade() {
             try {
                 const [secretariasResponse, responsaveisResponse] = await Promise.all([
-                    fetch(apiBaseUrl() + '/secretarias.php'),
-                    fetch(apiBaseUrl() + '/responsaveis.php')
+                    fetch(apiBaseUrl() + '/secretarias'),
+                    fetch(apiBaseUrl() + '/responsaveis')
                 ]);
 
                 const secretariasData = await secretariasResponse.json();
@@ -194,7 +194,7 @@
             }
 
             try {
-                const response = await fetch(apiBaseUrl() + '/unidades.php', {
+                const response = await fetch(apiBaseUrl() + '/unidades', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

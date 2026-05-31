@@ -83,7 +83,7 @@
 
         async function carregarHistorico() {
             try {
-                const response = await fetch(apiBaseUrl() + '/historicos.php');
+                const response = await fetch(apiBaseUrl() + '/historicos');
                 const result = await response.json();
                 const tbody = document.getElementById('historicoTableBody');
                 tbody.innerHTML = '';

@@ -114,7 +114,7 @@
     <script>
         async function carregarUnidadesInventario() {
             try {
-                const response = await fetch(getApiBaseUrl() + '/unidades.php');
+                const response = await fetch(getApiBaseUrl() + '/unidades');
                 const data = await response.json();
                 if (!data.success) {
                     throw new Error(data.message || 'Falha ao carregar unidades.');
@@ -146,7 +146,7 @@
             }
 
             try {
-                const response = await fetch(getApiBaseUrl() + '/inventarios.php', {
+                const response = await fetch(getApiBaseUrl() + '/inventarios', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({

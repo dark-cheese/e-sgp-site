@@ -15,7 +15,7 @@ function saudacao() {
     return 'Boa noite';
 }
 
-function getApiBaseUrl() { return 'backend/api'; }
+function getApiBaseUrl() { return 'api'; }
 
 document.addEventListener('DOMContentLoaded', function () {
 

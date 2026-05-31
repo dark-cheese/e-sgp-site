@@ -83,7 +83,7 @@
 
         async function carregarBaixas() {
             try {
-                const response = await fetch(apiBaseUrl() + '/baixas.php');
+                const response = await fetch(apiBaseUrl() + '/baixas');
                 const result = await response.json();
                 const tbody = document.getElementById('baixasTableBody');
                 tbody.innerHTML = '';

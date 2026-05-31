@@ -208,10 +208,10 @@
         async function carregarOpcoesItem() {
             try {
                 const [secretariasResponse, unidadesResponse, departamentosResponse, responsaveisResponse] = await Promise.all([
-                    fetch(getApiBaseUrl() + '/secretarias.php'),
-                    fetch(getApiBaseUrl() + '/unidades.php'),
-                    fetch(getApiBaseUrl() + '/locais.php'),
-                    fetch(getApiBaseUrl() + '/responsaveis.php')
+                    fetch(getApiBaseUrl() + '/secretarias'),
+                    fetch(getApiBaseUrl() + '/unidades'),
+                    fetch(getApiBaseUrl() + '/locais'),
+                    fetch(getApiBaseUrl() + '/responsaveis')
                 ]);
 
                 const [secretariasData, unidadesData, departamentosData, responsaveisData] = await Promise.all([
@@ -287,7 +287,7 @@
             }
 
             try {
-                const response = await fetch(getApiBaseUrl() + '/itens.php', {
+                const response = await fetch(getApiBaseUrl() + '/itens', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({

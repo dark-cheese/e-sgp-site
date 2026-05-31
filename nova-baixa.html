@@ -115,7 +115,7 @@
     <script>
         async function carregarItensBaixa() {
             try {
-                const response = await fetch(getApiBaseUrl() + '/itens.php');
+                const response = await fetch(getApiBaseUrl() + '/itens');
                 const data = await response.json();
                 if (!data.success) {
                     throw new Error(data.message || 'Falha ao carregar itens.');
@@ -147,7 +147,7 @@
             }
 
             try {
-                const response = await fetch(getApiBaseUrl() + '/baixas.php', {
+                const response = await fetch(getApiBaseUrl() + '/baixas', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({

@@ -83,7 +83,7 @@
 
         async function carregarInventarios() {
             try {
-                const response = await fetch(apiBaseUrl() + '/inventarios.php');
+                const response = await fetch(apiBaseUrl() + '/inventarios');
                 const result = await response.json();
                 const tbody = document.getElementById('inventarioTableBody');
                 tbody.innerHTML = '';

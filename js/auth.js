@@ -27,8 +27,7 @@ async function login(event) {
         return;
     }
     
-    // Caminho ABSOLUTO e COMPLETO para a InfinityFree
-	const url = 'backend/api/login_simple.php';    
+    const url = 'api/login_simple';
     console.log('Tentando login em:', url);
     
     try {
