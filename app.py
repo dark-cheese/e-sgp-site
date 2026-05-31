@@ -75,7 +75,35 @@ def register_history(conn, action, table_target, record_id, description):
     except Error as exc:
         app.logger.error(f'Erro ao registrar histórico: {exc}')
 
+# ============================================================
+# ROTA DE DIAGNÓSTICO (HEALTH CHECK)
+# ============================================================
 
+@app.route('/api/healthcheck', methods=['GET'])
+def health_check():
+    status_report = {
+        'server': 'online',
+        'database': 'offline',
+        'error': None
+    }
+    
+    conn = get_db_connection()
+    if conn:
+        try:
+            # Faz uma consulta levíssima apenas para ver se o MySQL responde
+            cursor = conn.cursor()
+            cursor.execute("SELECT 1")
+            cursor.fetchone()
+            cursor.close()
+            status_report['database'] = 'online'
+        except Exception as exc:
+            status_report['error'] = str(exc)
+        finally:
+            conn.close()
+    else:
+        status_report['error'] = 'Não foi possível estabelecer conexão (get_db_connection retornou None).'
+
+    return jsonify(status_report)
 # ============================================================
 # MIDDLEWARE - CORS (Cross-Origin Resource Sharing)
 # ============================================================
