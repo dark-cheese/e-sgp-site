@@ -142,7 +142,7 @@ def login_simple():
         return jsonify({'success': False, 'message': 'Falha ao conectar com o banco de dados.'}), 500
 
     try:
-        # Busca o usuário no banco e resolve o nível dinamicamente através do tipo_usuario
+        # Consulta ajustada: u.tipoUsuarioId com 'u' minúsculo para bater com o banco
         query = '''
             SELECT u.id, u.nome, u.email, u.senha, tu.nome AS nivel
             FROM usuario u
@@ -152,7 +152,7 @@ def login_simple():
         '''
         usuario = query_one(conn, query, (email,))
 
-        # Se o usuário existir e a senha informada for idêntica à do banco
+        # Validação direta contra os dados reais do banco
         if usuario and usuario['senha'] == senha:
             return jsonify({
                 'success': True,
@@ -295,7 +295,7 @@ def locais():
 
         if nome == '':
             return jsonify({'success': False, 'message': 'O nome do departamento é obrigatório.'}), 400
-        if unidade_id <= 0:
+        if_unidade_id <= 0:
             return jsonify({'success': False, 'message': 'A unidade é obrigatória.'}), 400
 
         query = '''
@@ -469,7 +469,7 @@ def inventarios():
         status = (data.get('status') or '').strip().upper()
         data_fim = (data.get('dataFim') or '').strip() or None
 
-        if nome == '' or ano <= 0 or unidade_id <= 0 or status == '':
+        if nome == '' or ano <= 0 or unity_id <= 0 or status == '':
             return jsonify({'success': False, 'message': 'Nome, ano, unidade e status são obrigatórios.'}), 400
         if status not in ['ABERTO', 'CONCLUIDO', 'SUSPENSO']:
             return jsonify({'success': False, 'message': 'Status inválido.'}), 400
