@@ -1,7 +1,7 @@
--- BANCO DE DADOS: e_sgp (Sistema de Gestão de Patrimônio)
+-- BANCO DE DADOS: 2026ProjetoInv (Sistema de Gestão de Patrimônio)
 -- SQL padrão ANSI: não depende de comandos MySQL como USE, AUTO_INCREMENT ou ENUM.
-CREATE DATABASE IF NOT EXISTS e_sgp;
-USE e_sgp;
+CREATE DATABASE IF NOT EXISTS 2026ProjetoInv;
+USE 2026ProjetoInv;
 
 -- Tabela para tipos de usuário (admin, gestor, usuario)
 CREATE TABLE tipo_usuario (
@@ -34,7 +34,7 @@ CREATE TABLE usuario (
     id INT AUTO_INCREMENT, -- Antes: INT AUTO_INCREMENT
     nome VARCHAR(50) NOT NULL,
     email VARCHAR(64) NOT NULL UNIQUE,
-    senha VARCHAR(32) NOT NULL,
+    senha VARCHAR(255) NOT NULL,
     tipoUsuarioId INTEGER NOT NULL, -- Antes: nivel
     CONSTRAINT pk_usuario PRIMARY KEY (id),
     CONSTRAINT fk_usuario_tipo FOREIGN KEY (tipoUsuarioId)
