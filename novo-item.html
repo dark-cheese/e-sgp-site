@@ -204,6 +204,124 @@
         </main>
     </div>
 
+    <script>
+        async function carregarOpcoesItem() {
+            try {
+                const [secretariasResponse, unidadesResponse, departamentosResponse, responsaveisResponse] = await Promise.all([
+                    fetch(getApiBaseUrl() + '/secretarias.php'),
+                    fetch(getApiBaseUrl() + '/unidades.php'),
+                    fetch(getApiBaseUrl() + '/locais.php'),
+                    fetch(getApiBaseUrl() + '/responsaveis.php')
+                ]);
+
+                const [secretariasData, unidadesData, departamentosData, responsaveisData] = await Promise.all([
+                    secretariasResponse.json(),
+                    unidadesResponse.json(),
+                    departamentosResponse.json(),
+                    responsaveisResponse.json()
+                ]);
+
+                if (secretariasData.success) {
+                    const secretariaSelect = document.getElementById('secretariaId');
+                    secretariasData.data.forEach(function (secretaria) {
+                        const option = document.createElement('option');
+                        option.value = secretaria.id;
+                        option.textContent = secretaria.nome;
+                        secretariaSelect.appendChild(option);
+                    });
+                }
+
+                if (unidadesData.success) {
+                    const unidadeSelect = document.getElementById('unidadeId');
+                    unidadesData.data.forEach(function (unidade) {
+                        const option = document.createElement('option');
+                        option.value = unidade.id;
+                        option.textContent = unidade.nome;
+                        unidadeSelect.appendChild(option);
+                    });
+                }
+
+                if (departamentosData.success) {
+                    const departamentoSelect = document.getElementById('departamentoId');
+                    departamentosData.data.forEach(function (departamento) {
+                        const option = document.createElement('option');
+                        option.value = departamento.id;
+                        option.textContent = departamento.nome + ' — ' + (departamento.unidadeId || '');
+                        departamentoSelect.appendChild(option);
+                    });
+                }
+
+                if (responsaveisData.success) {
+                    const responsavelSelect = document.getElementById('responsavelId');
+                    responsaveisData.data.forEach(function (responsavel) {
+                        const option = document.createElement('option');
+                        option.value = responsavel.id;
+                        option.textContent = responsavel.nome + (responsavel.cargo ? ' – ' + responsavel.cargo : '');
+                        responsavelSelect.appendChild(option);
+                    });
+                }
+            } catch (error) {
+                console.error(error);
+                alert('Erro ao carregar opções do formulário: ' + error.message);
+            }
+        }
+
+        async function salvarItem() {
+            const descricao = document.getElementById('descricao').value.trim();
+            const tipoMaterialId = Number(document.getElementById('tipoMaterialId').value);
+            const estado = document.getElementById('estado').value;
+            const departamentoId = Number(document.getElementById('departamentoId').value);
+            const localizacaoIdValue = document.getElementById('localizacaoId').value;
+            const responsavelId = document.getElementById('responsavelId').value;
+            const marca = document.getElementById('marca').value.trim();
+            const modelo = document.getElementById('modelo').value.trim();
+            const numeroSerie = document.getElementById('numeroSerie').value.trim();
+            const dataAquisicao = document.getElementById('dataAquisicao').value;
+            const valor = document.getElementById('valor').value;
+            const notaFiscal = document.getElementById('notaFiscal').value.trim();
+            const observacoes = document.getElementById('observacoes').value.trim();
+
+            if (!descricao || !tipoMaterialId || !estado || !departamentoId) {
+                alert('Preencha os campos obrigatórios antes de salvar o item.');
+                return;
+            }
+
+            try {
+                const response = await fetch(getApiBaseUrl() + '/itens.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        descricao: descricao,
+                        marca: marca,
+                        modelo: modelo,
+                        numeroSerie: numeroSerie,
+                        estado: estado,
+                        dataAquisicao: dataAquisicao,
+                        valor: valor !== '' ? Number(valor) : null,
+                        notaFiscal: notaFiscal,
+                        observacoes: observacoes,
+                        departamentoId: departamentoId,
+                        localizacaoId: localizacaoIdValue !== '' ? Number(localizacaoIdValue) : null,
+                        tipoMaterialId: tipoMaterialId,
+                        responsavelId: responsavelId !== '' ? Number(responsavelId) : null
+                    })
+                });
+
+                const data = await response.json();
+                if (!data.success) {
+                    throw new Error(data.message || 'Não foi possível cadastrar o item.');
+                }
+
+                alert(data.message);
+                window.location.href = 'itens.html';
+            } catch (error) {
+                console.error(error);
+                alert('Erro ao salvar item: ' + error.message);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', carregarOpcoesItem);
+    </script>
     <script src="js/main.js"></script>
     <script src="js/utils.js"></script>
 </body>

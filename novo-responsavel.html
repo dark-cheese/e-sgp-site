@@ -84,26 +84,9 @@
                     </div>
                     <div class="form-row-duas-colunas">
                         <div class="form-group">
-                            <label>E-mail do Usuário Vinculado *</label>
-                            <input type="email" id="emailResponsavel" placeholder="exemplo@prefeitura.br" required>
+                            <label>E-mail do Usuário Vinculado</label>
+                            <input type="email" id="emailResponsavel" placeholder="exemplo@prefeitura.br">
                         </div>
-                        <div class="form-group">
-                            <label>Telefone</label>
-                            <input type="tel" id="telefoneResponsavel" placeholder="(00) 00000-0000">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>Secretaria</label>
-                        <select id="secretariaResponsavel">
-                            <option value="">Selecione uma secretaria...</option>
-                            <option value="educacao">Educação</option>
-                            <option value="saude">Saúde</option>
-                            <option value="obras">Obras</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Observações</label>
-                        <textarea id="observacoesResponsavel" placeholder="Observações adicionais" rows="4"></textarea>
                     </div>
                     <div class="form-actions">
                         <button type="button" class="btn btn-back" onclick="window.location.href='responsaveis.html'"><i class="fas fa-arrow-left"></i> Voltar</button>
@@ -118,11 +101,8 @@
             var nome = document.getElementById('nomeResponsavel').value.trim();
             var cargo = document.getElementById('cargoResponsavel').value.trim();
             var email = document.getElementById('emailResponsavel').value.trim();
-            var telefone = document.getElementById('telefoneResponsavel').value.trim();
-            var secretaria = document.getElementById('secretariaResponsavel').value;
-            var observacoes = document.getElementById('observacoesResponsavel').value.trim();
 
-            if (!nome || !cargo || !email) {
+            if (!nome || !cargo) {
                 alert('Preencha os campos obrigatórios para cadastrar o responsável.');
                 return;
             }
@@ -136,10 +116,7 @@
                     body: JSON.stringify({
                         nome: nome,
                         cargo: cargo,
-                        email: email,
-                        telefone: telefone,
-                        secretaria: secretaria,
-                        observacoes: observacoes
+                        email: email
                     })
                 });
 

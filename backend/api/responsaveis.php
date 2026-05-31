@@ -10,6 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../includes/functions.php';
 $database = new Database();
 $conn = $database->getConnection();
 
@@ -85,11 +86,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->bindValue(':usuarioId', $usuarioId, PDO::PARAM_INT);
         }
         $stmt->execute();
+        $insertId = $conn->lastInsertId();
+        registrarHistorico($conn, 'CRIAR', 'responsavel', $insertId, 'Cadastrou novo responsável: ' . $nome);
 
         echo json_encode([
             'success' => true,
             'message' => 'Responsável cadastrado com sucesso.',
-            'id' => $conn->lastInsertId()
+            'id' => $insertId
         ]);
     } catch (PDOException $e) {
         echo json_encode([

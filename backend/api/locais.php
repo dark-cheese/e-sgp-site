@@ -10,6 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../includes/functions.php';
 
 $database = new Database();
 $conn = $database->getConnection();
@@ -68,8 +69,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->bindValue(':responsavelId', null, PDO::PARAM_NULL);
         }
         $stmt->execute();
+        $insertId = $conn->lastInsertId();
+        registrarHistorico($conn, 'CRIAR', 'departamento', $insertId, 'Cadastrou novo departamento: ' . $nome);
 
-        echo json_encode(['success' => true, 'message' => 'Departamento cadastrado com sucesso.', 'id' => $conn->lastInsertId()]);
+        echo json_encode(['success' => true, 'message' => 'Departamento cadastrado com sucesso.', 'id' => $insertId]);
     } catch (PDOException $e) {
         echo json_encode(['success' => false, 'message' => 'Erro ao cadastrar departamento: ' . $e->getMessage()]);
     }

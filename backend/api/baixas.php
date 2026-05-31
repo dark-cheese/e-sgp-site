@@ -10,6 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../includes/functions.php';
 
 $database = new Database();
 $conn = $database->getConnection();
@@ -75,8 +76,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->bindValue(':justificativa', $justificativa, PDO::PARAM_STR);
         $stmt->bindValue(':documento', $documento, PDO::PARAM_STR);
         $stmt->execute();
+        $insertId = $conn->lastInsertId();
+        registrarHistorico($conn, 'CRIAR', 'baixa', $insertId, 'Registrou baixa do item ID: ' . $itemId . ' tipo: ' . $tipo);
 
-        echo json_encode(['success' => true, 'message' => 'Baixa registrada com sucesso.', 'id' => $conn->lastInsertId()]);
+        echo json_encode(['success' => true, 'message' => 'Baixa registrada com sucesso.', 'id' => $insertId]);
     } catch (PDOException $e) {
         echo json_encode(['success' => false, 'message' => 'Erro ao registrar baixa: ' . $e->getMessage()]);
     }

@@ -30,4 +30,28 @@ function tratarData($data) {
     }
     return $data;
 }
+
+function getUsuarioSessaoId() {
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+    return isset($_SESSION['usuario_id']) ? (int)$_SESSION['usuario_id'] : 1;
+}
+
+function registrarHistorico($conn, $acao, $tabelaAlvo, $registroId, $descricao) {
+    try {
+        $usuarioId = getUsuarioSessaoId();
+        $query = 'INSERT INTO historico (usuarioId, acao, tabelaAlvo, registroId, descricao, dataRegistro) VALUES (:usuarioId, :acao, :tabelaAlvo, :registroId, :descricao, :dataRegistro)';
+        $stmt = $conn->prepare($query);
+        $stmt->bindValue(':usuarioId', $usuarioId, PDO::PARAM_INT);
+        $stmt->bindValue(':acao', $acao, PDO::PARAM_STR);
+        $stmt->bindValue(':tabelaAlvo', $tabelaAlvo, PDO::PARAM_STR);
+        $stmt->bindValue(':registroId', $registroId, PDO::PARAM_INT);
+        $stmt->bindValue(':descricao', $descricao, PDO::PARAM_STR);
+        $stmt->bindValue(':dataRegistro', date('Y-m-d'), PDO::PARAM_STR);
+        $stmt->execute();
+    } catch (PDOException $e) {
+        error_log('Erro ao registrar histórico: ' . $e->getMessage());
+    }
+}
 ?>
