@@ -9,10 +9,8 @@ import mysql.connector
 from mysql.connector import Error
 from config import DB_CONFIG
 
-# Inicializar a aplicação Flask
-# static_folder='.' permite servir arquivos HTML/CSS/JS do mesmo diretório
+# Inicializar a aplicação Flask apontando para a raiz do projeto
 app = Flask(__name__, static_folder='.', static_url_path='')
-
 
 
 # ============================================================
@@ -20,10 +18,6 @@ app = Flask(__name__, static_folder='.', static_url_path='')
 # ============================================================
 
 def get_db_connection():
-    """
-    Estabelece conexão com o banco de dados MySQL.
-    Retorna: objeto de conexão ou None em caso de erro
-    """
     try:
         return mysql.connector.connect(
             host=DB_CONFIG['host'],
@@ -40,10 +34,6 @@ def get_db_connection():
 
 
 def query_all(conn, query, params=None):
-    """
-    Executa uma consulta SQL e retorna TODOS os resultados como lista de dicionários.
-    Parâmetros: conn (conexão), query (SQL), params (argumentos da query)
-    """
     cursor = conn.cursor(dictionary=True)
     cursor.execute(query, params or ())
     rows = cursor.fetchall()
@@ -52,10 +42,6 @@ def query_all(conn, query, params=None):
 
 
 def query_one(conn, query, params=None):
-    """
-    Executa uma consulta SQL e retorna apenas o PRIMEIRO resultado.
-    Parâmetros: conn (conexão), query (SQL), params (argumentos da query)
-    """
     cursor = conn.cursor(dictionary=True)
     cursor.execute(query, params or ())
     row = cursor.fetchone()
@@ -64,10 +50,6 @@ def query_one(conn, query, params=None):
 
 
 def execute_insert(conn, query, params=None):
-    """
-    Executa um INSERT/UPDATE/DELETE e faz commit automático.
-    Retorna: o ID da última linha inserida (lastrowid)
-    """
     cursor = conn.cursor()
     cursor.execute(query, params or ())
     conn.commit()
@@ -77,10 +59,6 @@ def execute_insert(conn, query, params=None):
 
 
 def register_history(conn, action, table_target, record_id, description):
-    """
-    Registra uma ação no histórico do sistema.
-    Parâmetros: ação (CRIAR/EDITAR/DELETAR), tabela afetada, ID do registro, descrição
-    """
     try:
         query = '''
             INSERT INTO historico (usuarioId, acao, tabelaAlvo, registroId, descricao, dataRegistro)
@@ -98,17 +76,12 @@ def register_history(conn, action, table_target, record_id, description):
         app.logger.error(f'Erro ao registrar histórico: {exc}')
 
 
-
 # ============================================================
 # MIDDLEWARE - CORS (Cross-Origin Resource Sharing)
 # ============================================================
 
 @app.after_request
 def add_cors_headers(response):
-    """
-    Adiciona headers CORS para permitir requisições de qualquer origem.
-    Isso permite que o frontend faça fetch para qualquer domínio.
-    """
     response.headers['Access-Control-Allow-Origin'] = '*'
     response.headers['Access-Control-Allow-Headers'] = 'Content-Type'
     response.headers['Access-Control-Allow-Methods'] = 'GET,POST,OPTIONS'
@@ -117,10 +90,6 @@ def add_cors_headers(response):
 
 @app.route('/api/<path:endpoint>', methods=['OPTIONS'])
 def handle_options(endpoint):
-    """
-    Trata requisições OPTIONS (preflight) do navegador.
-    Necessário para CORS funcionar corretamente.
-    """
     return '', 200
 
 
@@ -142,9 +111,10 @@ def login_simple():
         return jsonify({'success': False, 'message': 'Falha ao conectar com o banco de dados.'}), 500
 
     try:
-        # Busca o usuário no banco e resolve o nível dinamicamente através do tipo_usuario
+        # ALIASES EXPLÍCITOS: Garante que os nomes das chaves retornem idênticos 
+        # independente do comportamento Case-Insensitive/Case-Sensitive do servidor Linux.
         query = '''
-            SELECT u.id, u.nome, u.email, u.senha, tu.nome AS nivel
+            SELECT u.id AS id, u.nome AS nome, u.email AS email, u.senha AS senha, tu.nome AS nivel
             FROM usuario u
             JOIN tipo_usuario tu ON u.tipoUsuarioId = tu.id
             WHERE u.email = %s 
@@ -152,22 +122,29 @@ def login_simple():
         '''
         usuario = query_one(conn, query, (email,))
 
-        # Se o usuário existir e a senha informada for idêntica à do banco
-        if usuario and usuario['senha'] == senha:
-            return jsonify({
-                'success': True,
-                'message': 'Login realizado com sucesso!',
-                'usuario': {
-                    'id': usuario['id'],
-                    'nome': usuario['nome'],
-                    'email': usuario['email'],
-                    'nivel': usuario['nivel']
-                }
-            })
+        if usuario:
+            id_user = usuario.get('id')
+            nome_user = usuario.get('nome')
+            email_user = usuario.get('email')
+            senha_user = usuario.get('senha')
+            nivel_user = usuario.get('nivel')
+
+            if senha_user == senha:
+                return jsonify({
+                    'success': True,
+                    'message': 'Login realizado com sucesso!',
+                    'usuario': {
+                        'id': id_user,
+                        'nome': nome_user,
+                        'email': email_user,
+                        'nivel': nivel_user
+                    }
+                })
 
         return jsonify({'success': False, 'message': 'E-mail ou senha incorretos!'}), 401
 
     except Error as exc:
+        app.logger.error(f'Erro interno no login: {exc}')
         return jsonify({'success': False, 'message': f'Erro interno ao processar login: {exc}'}), 500
     finally:
         conn.close()
@@ -192,8 +169,8 @@ def secretarias():
                 LEFT JOIN responsavel r ON s.responsavelId = r.id
                 ORDER BY s.nome
             '''
-            secretarias = query_all(conn, query)
-            return jsonify({'success': True, 'data': secretarias})
+            secretarias_list = query_all(conn, query)
+            return jsonify({'success': True, 'data': secretarias_list})
 
         data = request.get_json(silent=True) or {}
         nome = (data.get('nome') or '').strip()
@@ -557,7 +534,7 @@ def historicos():
 
 
 # ============================================================
-# ROTA DE ARQUIVOS ESTÁTICOS (FRONTEND)
+# ROTA DE ARQUIVOS ESTÁTICOS (FRONTEND INTERCEPTOR)
 # ============================================================
 
 @app.route('/', defaults={'path': 'index.html'})
