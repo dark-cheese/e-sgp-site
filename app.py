@@ -3,16 +3,58 @@ from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from werkzeug.security import check_password_hash, generate_password_hash
+import logging
+
+# Configurar logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 CORS(app)  # Ativa o CORS para todo o projeto automaticamente
 
-# Configuração automática do Banco de Dados usando SQLAlchemy
-# Se não encontrar a variável no Render, usa o seu banco institucional padrão
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
-    'DATABASE_URL', 
-    'mysql+mysqlconnector://2026Iventario:Inventa%402026@200.131.251.11:3341/2026ProjetoInv'
-)
+# ============================================================
+# CONFIGURAÇÃO DO BANCO DE DADOS
+# ============================================================
+
+# Prioridade de configuração:
+# 1. DATABASE_URL (Render ou outra plataforma)
+# 2. Variáveis individuais (local ou Render)
+# 3. String padrão (local)
+
+DATABASE_URL = os.environ.get('DATABASE_URL')
+
+if DATABASE_URL:
+    # Usar DATABASE_URL fornecido
+    app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
+    logger.info("✓ Usando DATABASE_URL do ambiente")
+else:
+    # Construir URL a partir de variáveis individuais
+    db_user = os.environ.get('DB_USER', '2026Iventario')
+    db_password = os.environ.get('DB_PASSWORD', 'Inventa@2026')
+    db_host = os.environ.get('DB_HOST', '200.131.251.11')
+    db_port = os.environ.get('DB_PORT', '3341')
+    db_name = os.environ.get('DB_NAME', '2026ProjetoInv')
+    
+    # Verificar se está rodando no Render (sem MySQL local disponível)
+    if os.environ.get('RENDER'):
+        logger.warning("⚠️  Rodando no Render, mas DATABASE_URL não definida")
+        logger.warning("⚠️  Configure DATABASE_URL nas Environment Variables do Render")
+    
+    # Tentar usar PyMySQL como fallback
+    try:
+        db_uri = f'mysql+pymysql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}'
+    except:
+        db_uri = f'mysql+mysqlconnector://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}'
+    
+    app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
+    logger.info(f"✓ Conectando ao banco: {db_host}:{db_port}/{db_name}")
+
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+    'connect_args': {'timeout': 10},
+    'pool_pre_ping': True,  # Testa conexão antes de usar
+    'pool_recycle': 3600,   # Recicla conexões a cada 1 hora
+}
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -175,4 +217,15 @@ def logout():
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)
+    debug = os.environ.get("FLASK_ENV") == "development"
+    
+    logger.info(f"🚀 Iniciando servidor e-SGP na porta {port}")
+    logger.info(f"🔧 Debug: {debug}")
+    
+    app.run(
+        host="0.0.0.0",
+        port=port,
+        debug=debug,
+        threaded=True
+    )
+
