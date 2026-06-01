@@ -2,7 +2,7 @@
 # e-SGP (Sistema de Gestão de Patrimônio)
 # Backend em Python com Flask
 # ============================================================
-
+import os
 from datetime import date
 from flask import Flask, jsonify, request, send_from_directory
 import mysql.connector
