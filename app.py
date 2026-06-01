@@ -7,7 +7,6 @@ from datetime import date
 from flask import Flask, jsonify, request, send_from_directory
 import mysql.connector
 from mysql.connector import Error
-from config import DB_CONFIG
 
 # Inicializar a aplicação Flask apontando para a raiz do projeto
 app = Flask(__name__, static_folder='.', static_url_path='')
@@ -18,20 +17,15 @@ app = Flask(__name__, static_folder='.', static_url_path='')
 # ============================================================
 
 def get_db_connection():
-    try:
-        return mysql.connector.connect(
-            host=DB_CONFIG['host'],
-            port=DB_CONFIG['port'],
-            user=DB_CONFIG['user'],
-            password=DB_CONFIG['password'],
-            database=DB_CONFIG['database'],
-            charset=DB_CONFIG['charset'],
-            use_unicode=DB_CONFIG['use_unicode'],
-        )
-    except Error as exc:
-        app.logger.error(f'Erro de conexão: {exc}')
-        return None
-
+    return mysql.connector.connect(
+        host='200.131.251.11',
+        port=3341,
+        database='2026ProjetoInv',
+        user='2026Iventario',
+        password='Inventa@2026',
+        charset='utf8',
+        connection_timeout=5
+    )
 
 def query_all(conn, query, params=None):
     cursor = conn.cursor(dictionary=True)
