@@ -1,54 +1,74 @@
-// ===== FUNÇÕES GERAIS =====
+// ===== FUNÇÕES GERAIS DA APLICAÇÃO =====
 
+// Função para exibir data formatada
 function mostrarData() {
-    var data = new Date();
-    var dia = String(data.getDate()).padStart(2, '0');
-    var mes = String(data.getMonth() + 1).padStart(2, '0');
-    var ano = data.getFullYear();
+    const data = new Date();
+    const dia = String(data.getDate()).padStart(2, '0');
+    const mes = String(data.getMonth() + 1).padStart(2, '0');
+    const ano = data.getFullYear();
     return dia + '/' + mes + '/' + ano;
 }
 
+// Função de saudação por hora
 function saudacao() {
-    var hora = new Date().getHours();
+    const hora = new Date().getHours();
     if (hora < 12) return 'Bom dia';
     if (hora < 18) return 'Boa tarde';
     return 'Boa noite';
 }
 
-function getApiBaseUrl() { return 'api'; }
+// Obter URL base da API
+function getApiBaseUrl() {
+    return '/api';
+}
 
+// Função para obter dados do usuário logado
+function getUsuarioLogado() {
+    const usuarioStr = sessionStorage.getItem('usuario');
+    return usuarioStr ? JSON.parse(usuarioStr) : null;
+}
+
+// Inicializar componentes ao carregar a página
 document.addEventListener('DOMContentLoaded', function () {
+    // Verificar se há usuário logado
+    const usuario = getUsuarioLogado();
+    if (!usuario) {
+        window.location.href = 'index.html';
+        return;
+    }
 
-    // Atualiza data no header
-    var dataEl = document.querySelector('.date-display');
+    // Atualizar data no header
+    const dataEl = document.querySelector('.date-display');
     if (dataEl) {
         dataEl.innerHTML = '<i class="far fa-calendar-alt"></i> ' + mostrarData();
     }
 
-    // Saudação no welcome card
-    var saudacaoEl = document.querySelector('.welcome-card h2');
+    // Adicionar saudação no welcome card
+    const saudacaoEl = document.querySelector('.welcome-card h2');
     if (saudacaoEl) {
-        saudacaoEl.textContent = saudacao() + ', Admin!';
+        const nomeUsuario = usuario.nome || 'Admin';
+        saudacaoEl.textContent = saudacao() + ', ' + nomeUsuario + '!';
     }
 
-    // Marca menu ativo automaticamente
-    var pagina = window.location.pathname.split('/').pop() || 'dashboard.html';
+    // Marcar menu ativo automaticamente
+    const pagina = window.location.pathname.split('/').pop() || 'dashboard.html';
     document.querySelectorAll('.menu-item').forEach(function (item) {
         if (item.getAttribute('href') === pagina) {
             item.classList.add('active');
         }
     });
 
-    // Inicializa filtros, paginação e botões de ação
+    // Inicializar funcionalidades
     inicializarFiltros();
     inicializarPaginacao();
     inicializarAcoes();
-
+    inicializarMenuMobile();
 });
 
+// Inicializar filtros de tabela
 function inicializarFiltros() {
     document.querySelectorAll('.filter-section').forEach(function (section) {
-        var button = section.querySelector('button.btn-primary');
+        const button = section.querySelector('button.btn-primary');
         if (!button) return;
 
         button.addEventListener('click', function (event) {
@@ -56,7 +76,7 @@ function inicializarFiltros() {
             aplicarFiltroTabela(section);
         });
 
-        var inputs = section.querySelectorAll('input, select');
+        const inputs = section.querySelectorAll('input, select');
         inputs.forEach(function (input) {
             input.addEventListener('keydown', function (event) {
                 if (event.key === 'Enter') {
@@ -68,27 +88,29 @@ function inicializarFiltros() {
     });
 }
 
+// Aplicar filtro na tabela
 function aplicarFiltroTabela(section) {
-    var searchInput = section.querySelector('input[type="text"], input[type="search"]');
-    var searchText = searchInput ? searchInput.value.trim().toLowerCase() : '';
-    var selects = Array.from(section.querySelectorAll('select'));
-    var filters = selects
+    const searchInput = section.querySelector('input[type="text"], input[type="search"]');
+    const searchText = searchInput ? searchInput.value.trim().toLowerCase() : '';
+    const selects = Array.from(section.querySelectorAll('select'));
+    
+    const filters = selects
         .map(function (select) {
-            var value = select.value.trim().toLowerCase();
-            var text = select.options[select.selectedIndex] ? select.options[select.selectedIndex].text.toLowerCase() : '';
+            const value = select.value.trim().toLowerCase();
+            const text = select.options[select.selectedIndex] ? select.options[select.selectedIndex].text.toLowerCase() : '';
             return { value: value, text: text, element: select };
         })
         .filter(function (item) {
             return item.value !== '' && item.value !== 'todos os estados' && item.value !== 'selecione...';
         });
 
-    var table = section.closest('.main-content')?.querySelector('table');
+    const table = section.closest('.main-content')?.querySelector('table');
     if (!table) return;
 
-    var rows = table.querySelectorAll('tbody tr');
+    const rows = table.querySelectorAll('tbody tr');
     rows.forEach(function (row) {
-        var rowText = row.innerText.toLowerCase();
-        var visible = true;
+        const rowText = row.innerText.toLowerCase();
+        let visible = true;
 
         if (searchText && rowText.indexOf(searchText) === -1) {
             visible = false;
@@ -104,6 +126,7 @@ function aplicarFiltroTabela(section) {
     });
 }
 
+// Inicializar paginação
 function inicializarPaginacao() {
     document.querySelectorAll('.pagination').forEach(function (pagination) {
         pagination.querySelectorAll('.page-btn').forEach(function (btn) {
@@ -111,7 +134,6 @@ function inicializarPaginacao() {
                 event.preventDefault();
 
                 if (btn.querySelector('i')) {
-                    // Botões de navegação anterior/próximo apenas mudam estilo
                     return;
                 }
 
@@ -124,6 +146,7 @@ function inicializarPaginacao() {
     });
 }
 
+// Inicializar ações dos botões
 function inicializarAcoes() {
     document.querySelectorAll('.action-btn').forEach(function (button) {
         if (button.hasAttribute('onclick')) {
@@ -132,25 +155,43 @@ function inicializarAcoes() {
 
         button.addEventListener('click', function (event) {
             event.preventDefault();
-            var text = button.innerText.toLowerCase();
-            var iconEye = button.querySelector('.fa-eye');
-            var iconEdit = button.querySelector('.fa-edit');
-            var iconTag = button.querySelector('.fa-tag');
+            const text = button.innerText.toLowerCase();
+            const iconEye = button.querySelector('.fa-eye');
+            const iconEdit = button.querySelector('.fa-edit');
+            const iconTag = button.querySelector('.fa-tag');
 
             if (iconEye || text.includes('ver')) {
-                alert('Visualizar detalhes ainda não está implementado.');
+                mostrarNotificacao('Visualizar detalhes ainda não está implementado.', 'info');
                 return;
             }
             if (iconEdit || text.includes('editar') || text.includes('edit')) {
-                alert('Edição ainda não está implementada.');
+                mostrarNotificacao('Edição ainda não está implementada.', 'info');
                 return;
             }
             if (iconTag) {
-                alert('Ação de etiqueta/tag ainda não está implementada.');
+                mostrarNotificacao('Ação de etiqueta/tag ainda não está implementada.', 'info');
                 return;
             }
-            alert('Ação do botão ainda não está implementada.');
+            mostrarNotificacao('Ação do botão ainda não está implementada.', 'info');
         });
     });
 }
 
+// Inicializar menu mobile
+function inicializarMenuMobile() {
+    const menuToggle = document.querySelector('.menu-toggle');
+    const sidebar = document.querySelector('.sidebar');
+
+    if (menuToggle && sidebar) {
+        menuToggle.addEventListener('click', function () {
+            sidebar.classList.toggle('open');
+        });
+
+        // Fechar menu ao clicar em um item
+        document.querySelectorAll('.menu-item').forEach(function (item) {
+            item.addEventListener('click', function () {
+                sidebar.classList.remove('open');
+            });
+        });
+    }
+}

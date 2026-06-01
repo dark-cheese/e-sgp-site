@@ -1,6 +1,6 @@
-// js/auth.js
-// Funções de autenticação
+// ===== SISTEMA DE AUTENTICAÇÃO =====
 
+// Função para alternar visibilidade da senha
 function toggleSenha() {
     const senha = document.getElementById('password');
     const icone = document.querySelector('.toggle-password');
@@ -16,22 +16,42 @@ function toggleSenha() {
     }
 }
 
+// Verificar se o usuário está logado
+function verificarLogin() {
+    const usuario = sessionStorage.getItem('usuario');
+    if (!usuario && window.location.pathname.includes('index.html')) {
+        // Está na página de login, permitir
+        return;
+    } else if (!usuario && !window.location.pathname.includes('index.html')) {
+        // Não está na página de login e não tem sessão, redirecionar
+        window.location.href = 'index.html';
+    } else if (usuario && window.location.pathname.includes('index.html')) {
+        // Está logado e na página de login, redirecionar ao dashboard
+        window.location.href = 'dashboard.html';
+    }
+}
+
+// Função de login
 async function login(event) {
     event.preventDefault();
     
     const email = document.getElementById('email')?.value;
     const senha = document.getElementById('password')?.value;
+    const botaoLogin = document.querySelector('.btn-login');
     
     if (!email || !senha) {
-        alert('Preencha todos os campos!');
+        mostrarNotificacao('Preencha todos os campos!', 'erro');
         return;
     }
     
-    // CORREÇÃO: Adicionada a barra '/' no início para garantir a rota absoluta na raiz do Render
-    const url = '/api/login_simple';
-    console.log('Tentando login em:', url);
+    // Desabilitar botão durante requisição
+    botaoLogin.disabled = true;
+    botaoLogin.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Autenticando...';
     
     try {
+        const url = '/api/login_simple';
+        console.log('Tentando login em:', url);
+        
         const response = await fetch(url, {
             method: 'POST',
             headers: {
@@ -40,16 +60,14 @@ async function login(event) {
             body: JSON.stringify({ email, senha })
         });
         
-        // Melhoria: Se a resposta não for 200 OK, tenta ler o erro enviado pelo Flask
         if (!response.ok) {
-            let errorMessage = `HTTP error! status: ${response.status}`;
+            let errorMessage = `Erro HTTP: ${response.status}`;
             try {
                 const errorData = await response.json();
                 errorMessage = errorData.message || errorMessage;
             } catch (e) {
-                // Se não for um JSON (ex: erro 500 do Render), lê como texto puro
                 const errorText = await response.text();
-                console.error('Resposta do servidor não é JSON:', errorText);
+                console.error('Resposta não JSON:', errorText);
             }
             throw new Error(errorMessage);
         }
@@ -57,19 +75,50 @@ async function login(event) {
         const data = await response.json();
         
         if (data.success) {
-            alert('Login realizado com sucesso!');
-            sessionStorage.setItem('usuario', JSON.stringify(data.usuario));
-            window.location.href = 'dashboard.html';
+            // Armazenar dados do usuário
+            sessionStorage.setItem('usuario', JSON.stringify({
+                id: data.usuario?.id,
+                email: data.usuario?.email,
+                nome: data.usuario?.nome,
+                perfil: data.usuario?.perfil
+            }));
+            
+            mostrarNotificacao('Login realizado com sucesso!', 'sucesso');
+            
+            // Redirecionar após 800ms
+            setTimeout(() => {
+                window.location.href = 'dashboard.html';
+            }, 800);
         } else {
-            alert(data.message || 'Erro no login!');
+            mostrarNotificacao(data.message || 'Erro ao realizar login!', 'erro');
+            botaoLogin.disabled = false;
+            botaoLogin.innerHTML = '<i class="fas fa-sign-in-alt"></i> Entrar';
         }
     } catch (error) {
         console.error('Erro detalhado:', error);
-        alert('Erro ao conectar com o servidor!\n\n' + error.message);
+        mostrarNotificacao('Erro ao conectar com o servidor: ' + error.message, 'erro');
+        botaoLogin.disabled = false;
+        botaoLogin.innerHTML = '<i class="fas fa-sign-in-alt"></i> Entrar';
     }
 }
 
-// Configurar o formulário quando a página carregar
-if (document.getElementById('loginForm')) {
-    document.getElementById('loginForm').addEventListener('submit', login);
+// Função de logout
+function logout() {
+    sessionStorage.removeItem('usuario');
+    window.location.href = 'index.html';
 }
+
+// Configurar o formulário quando a página carregar
+document.addEventListener('DOMContentLoaded', function () {
+    // Verificar autenticação
+    verificarLogin();
+    
+    // Configurar evento de submit do formulário
+    const loginForm = document.getElementById('loginForm');
+    if (loginForm) {
+        loginForm.addEventListener('submit', login);
+        
+        // Focar no campo de email ao carregar
+        document.getElementById('email').focus();
+    }
+});
