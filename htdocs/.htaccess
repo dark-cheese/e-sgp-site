@@ -1,0 +1,18 @@
+# e-SGP - Configuração Apache para InfinityFree
+Options -Indexes
+
+# Segurança: bloquear acesso direto a arquivos sensíveis
+<FilesMatch "\.(sql|docx|md|log)$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
+
+# Redirecionar raiz para página de login
+DirectoryIndex frontend/index.html index.html index.php
+
+# Permitir CORS para as APIs
+<IfModule mod_headers.c>
+    Header always set Access-Control-Allow-Origin "*"
+    Header always set Access-Control-Allow-Methods "POST, GET, OPTIONS"
+    Header always set Access-Control-Allow-Headers "Content-Type"
+</IfModule>
