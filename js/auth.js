@@ -49,7 +49,7 @@ async function login(event) {
         if (data.success) {
             alert('Login realizado com sucesso!');
             sessionStorage.setItem('usuario', JSON.stringify(data.usuario));
-            window.location.href = '/frontend/dashboard.html';
+            window.location.href = '/dashboard.html';
         } else {
             alert(data.message || 'Erro no login!');
         }
