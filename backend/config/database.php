@@ -37,3 +37,4 @@ class Database {
     }
 }
 ?>
+<!-- esse é o arquivo de conexão  -->
