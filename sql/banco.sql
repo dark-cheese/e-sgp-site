@@ -46,7 +46,9 @@ CREATE TABLE usuario (
 );
 
 INSERT INTO usuario (nome, email, senha, tipoUsuarioId) VALUES
-('Isabella', 'admin@gmail.com', 'admin123', 1); -- Aqui o 1 aponta para o 'admin' -- Admin
+('Isabella', 'admin@gmail.com', 'admin123', 1);
+INSERT INTO usuario (nome, email, senha, tipoUsuarioId) VALUES
+('GUilherme', 'guilherme@gmail.com', 'admin123', 1);  -- Aqui o 1 aponta para o 'admin' -- Admin
 
 -- Tabela para responsáveis físicos ou servidores do patrimônio
 CREATE TABLE responsavel (
@@ -221,6 +223,8 @@ CREATE TABLE inventario (
         ON UPDATE RESTRICT
         ON DELETE SET NULL
 );
+insert into inventario (ano, nome, dataInicio, dataFim, status, unidadeId) VALUES
+(2024, 'Inventário Anual 2024', '2024-01-01', '2024-12-31', 'ABERTO', 1); -- Exemplo de inventário para o ano de 2024
 
 CREATE TABLE inventario_item (
     id INT AUTO_INCREMENT,

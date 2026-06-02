@@ -3,7 +3,7 @@ DB_CONFIG = {
     'port': 3341,
     'database': '2026ProjetoInv',
     'user': '2026Iventario',
-    'password': 'Inventa@2026',
+    'password': 'Inventa@2025',
     'charset': 'utf8',
     'use_unicode': True,
 }
