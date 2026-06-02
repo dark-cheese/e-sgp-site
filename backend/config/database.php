@@ -6,7 +6,7 @@ class Database {
     private $port     = 3341;
     private $db_name  = "2026ProjetoInv";
     private $username = "2026Iventario";
-    private $password = "Inventa@2025";
+    private $password = "Inventa@2026";
 
     public $conn;
     private $ultimo_erro = null;
