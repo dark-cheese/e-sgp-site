@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 -- BANCO DE DADOS: 2026ProjetoInv (Sistema de Gestão de Patrimônio)
 -- SQL padrão ANSI: não depende de comandos MySQL como USE, AUTO_INCREMENT ou ENUM.
 CREATE DATABASE IF NOT EXISTS 2026ProjetoInv;
