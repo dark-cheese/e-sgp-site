@@ -70,7 +70,7 @@
     <script>
         async function carregarResponsaveisLista() {
             try {
-                const response = await fetch(getApiBaseUrl() + '/responsaveis');
+                const response = await fetch(getApiBaseUrl() + '/responsaveis.php');
                 const data = await response.json();
                 const tbody = document.getElementById('responsavelTableBody');
                 tbody.innerHTML = '';
@@ -103,4 +103,3 @@
     <script src="js/main.js"></script>
 </body>
 </html>
-

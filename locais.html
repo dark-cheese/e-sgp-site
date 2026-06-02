@@ -50,9 +50,9 @@
                 <div class="page-title">
                     <h1>Departamentos</h1>
                     <div class="breadcrumb">
-                        <a href="secretarias.html">Secretarias</a>
+                        <a href="secretarias.html">Educação</a>
                         <i class="fas fa-chevron-right"></i>
-                        <a href="unidades.html">Unidades</a>
+                        <a href="unidades.html">E.M. Pedro</a>
                         <i class="fas fa-chevron-right"></i>
                         <span>Departamentos</span>
                     </div>
@@ -61,6 +61,21 @@
                     <i class="fas fa-plus"></i> Novo Departamento
                 </button>
             </header>
+
+            <div class="unidade-header">
+                <div class="unidade-icon">
+                    <i class="fas fa-school"></i>
+                </div>
+                <div class="unidade-info">
+                    <h3>Escola Municipal Pedro Álvares</h3>
+                    <p><i class="fas fa-map-marker-alt"></i> Rua das Flores, 123 - Centro</p>
+                    <p><i class="fas fa-user"></i> Diretora Maria Silva</p>
+                    <div class="local-stats">
+                        <span><i class="fas fa-door-open"></i> 12 departamentos</span>
+                        <span><i class="fas fa-boxes"></i> 345 itens</span>
+                    </div>
+                </div>
+            </div>
 
             <table>
                 <thead>
@@ -90,12 +105,12 @@
             if (index !== -1) {
                 return path.substring(0, index) + '/backend/api';
             }
-            return 'backend/api';
+            return '/backend/api';
         }
 
         async function carregarDepartamentos() {
             try {
-                const response = await fetch(apiBaseUrl() + '/locais');
+                const response = await fetch(apiBaseUrl() + '/locais.php');
                 const data = await response.json();
                 const tbody = document.getElementById('departamentoTableBody');
                 tbody.innerHTML = '';
@@ -137,4 +152,3 @@
     <script src="js/utils.js"></script>
 </body>
 </html>
-

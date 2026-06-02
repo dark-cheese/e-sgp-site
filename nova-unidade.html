@@ -139,14 +139,14 @@
             if (index !== -1) {
                 return path.substring(0, index) + '/backend/api';
             }
-            return 'backend/api';
+            return '/backend/api';
         }
 
         async function carregarOpcoesUnidade() {
             try {
                 const [secretariasResponse, responsaveisResponse] = await Promise.all([
-                    fetch(apiBaseUrl() + '/secretarias'),
-                    fetch(apiBaseUrl() + '/responsaveis')
+                    fetch(apiBaseUrl() + '/secretarias.php'),
+                    fetch(apiBaseUrl() + '/responsaveis.php')
                 ]);
 
                 const secretariasData = await secretariasResponse.json();
@@ -194,7 +194,7 @@
             }
 
             try {
-                const response = await fetch(apiBaseUrl() + '/unidades', {
+                const response = await fetch(apiBaseUrl() + '/unidades.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -226,4 +226,3 @@
     <script src="js/main.js"></script>
 </body>
 </html>
-

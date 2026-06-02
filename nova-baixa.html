@@ -75,18 +75,15 @@
                     <div class="form-row-duas-colunas">
                         <div class="form-group">
                             <label>Item *</label>
-                            <select id="itemBaixa" required>
-                                <option value="">Selecione um item...</option>
-                            </select>
+                            <input type="text" id="itemBaixa" placeholder="Ex: Computador Desktop" required>
                         </div>
                         <div class="form-group">
                             <label>Tipo de Baixa *</label>
                             <select id="tipoBaixa" required>
                                 <option value="">Selecione...</option>
-                                <option value="DOACAO">DOAÇÃO</option>
-                                <option value="PERDA">PERDA</option>
-                                <option value="CADASTRAMENTO_INDEVIDO">CADASTRAMENTO INDEVIDO</option>
-                                <option value="INUTILIZACAO">DESCARTE</option>
+                                <option value="doacao">DOAÇÃO</option>
+                                <option value="perda">PERDA</option>
+                                <option value="descarte">DESCARTADA</option>
                             </select>
                         </div>
                     </div>
@@ -95,14 +92,18 @@
                             <label>Data *</label>
                             <input type="date" id="dataBaixa" required>
                         </div>
+                        <div class="form-group">
+                            <label>Quantidade *</label>
+                            <input type="number" id="quantidadeBaixa" min="1" value="1" required>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label>Justificativa *</label>
                         <textarea id="justificativaBaixa" placeholder="Motivo da baixa" rows="4" required></textarea>
                     </div>
                     <div class="form-group">
-                        <label>Documento</label>
-                        <input type="text" id="documentoBaixa" placeholder="Número do documento ou referência">
+                        <label>Observações</label>
+                        <textarea id="observacoesBaixa" placeholder="Notas adicionais" rows="3"></textarea>
                     </div>
                     <div class="form-actions">
                         <button type="button" class="btn btn-back" onclick="window.location.href='baixas.html'"><i class="fas fa-arrow-left"></i> Voltar</button>
@@ -113,68 +114,20 @@
         </main>
     </div>
     <script>
-        async function carregarItensBaixa() {
-            try {
-                const response = await fetch(getApiBaseUrl() + '/itens');
-                const data = await response.json();
-                if (!data.success) {
-                    throw new Error(data.message || 'Falha ao carregar itens.');
-                }
-                const itemSelect = document.getElementById('itemBaixa');
-                itemSelect.innerHTML = '<option value="">Selecione um item...</option>';
-                data.data.forEach(function (item) {
-                    const option = document.createElement('option');
-                    option.value = item.id;
-                    option.textContent = item.numeroPatrimonio + ' — ' + item.descricao;
-                    itemSelect.appendChild(option);
-                });
-            } catch (error) {
-                console.error(error);
-                alert('Erro ao carregar itens: ' + error.message);
-            }
-        }
-
-        async function salvarBaixa() {
-            var itemId = Number(document.getElementById('itemBaixa').value);
+        function salvarBaixa() {
+            var item = document.getElementById('itemBaixa').value.trim();
             var tipo = document.getElementById('tipoBaixa').value;
             var data = document.getElementById('dataBaixa').value;
+            var quantidade = document.getElementById('quantidadeBaixa').value;
             var justificativa = document.getElementById('justificativaBaixa').value.trim();
-            var documento = document.getElementById('documentoBaixa').value.trim() || null;
-
-            if (!itemId || !tipo || !data || !justificativa) {
+            if (!item || !tipo || !data || !quantidade || !justificativa) {
                 alert('Preencha todos os campos obrigatórios para registrar a baixa.');
                 return;
             }
-
-            try {
-                const response = await fetch(getApiBaseUrl() + '/baixas', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        itemId: itemId,
-                        tipo: tipo,
-                        dataBaixa: data,
-                        justificativa: justificativa,
-                        documento: documento
-                    })
-                });
-
-                const dataResponse = await response.json();
-                if (!dataResponse.success) {
-                    throw new Error(dataResponse.message || 'Não foi possível registrar a baixa.');
-                }
-
-                alert(dataResponse.message);
-                window.location.href = 'baixas.html';
-            } catch (error) {
-                console.error(error);
-                alert('Erro ao registrar baixa: ' + error.message);
-            }
+            alert('Baixa registrada com sucesso!');
+            window.location.href = 'baixas.html';
         }
-
-        document.addEventListener('DOMContentLoaded', carregarItensBaixa);
     </script>
     <script src="js/main.js"></script>
 </body>
 </html>
-

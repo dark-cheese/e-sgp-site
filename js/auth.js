@@ -27,8 +27,8 @@ async function login(event) {
         return;
     }
     
-    // CORREÇÃO: Adicionada a barra '/' no início para garantir a rota absoluta na raiz do Render
-    const url = '/api/login_simple';
+    // Caminho relativo para a API
+	const url = getApiBaseUrl() + '/login_simple.php';    
     console.log('Tentando login em:', url);
     
     try {
@@ -40,18 +40,8 @@ async function login(event) {
             body: JSON.stringify({ email, senha })
         });
         
-        // Melhoria: Se a resposta não for 200 OK, tenta ler o erro enviado pelo Flask
         if (!response.ok) {
-            let errorMessage = `HTTP error! status: ${response.status}`;
-            try {
-                const errorData = await response.json();
-                errorMessage = errorData.message || errorMessage;
-            } catch (e) {
-                // Se não for um JSON (ex: erro 500 do Render), lê como texto puro
-                const errorText = await response.text();
-                console.error('Resposta do servidor não é JSON:', errorText);
-            }
-            throw new Error(errorMessage);
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
         
         const data = await response.json();
@@ -59,7 +49,7 @@ async function login(event) {
         if (data.success) {
             alert('Login realizado com sucesso!');
             sessionStorage.setItem('usuario', JSON.stringify(data.usuario));
-            window.location.href = 'dashboard.html';
+            window.location.href = '/dashboard.html';
         } else {
             alert(data.message || 'Erro no login!');
         }

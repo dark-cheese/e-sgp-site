@@ -78,12 +78,12 @@
             if (index !== -1) {
                 return path.substring(0, index) + '/backend/api';
             }
-            return 'backend/api';
+            return '/backend/api';
         }
 
         async function carregarHistorico() {
             try {
-                const response = await fetch(apiBaseUrl() + '/historicos');
+                const response = await fetch(apiBaseUrl() + '/historicos.php');
                 const result = await response.json();
                 const tbody = document.getElementById('historicoTableBody');
                 tbody.innerHTML = '';
@@ -120,5 +120,3 @@
     <script src="js/main.js"></script>
 </body>
 </html>
-
-

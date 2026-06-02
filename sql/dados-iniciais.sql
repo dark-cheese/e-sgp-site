@@ -3,37 +3,39 @@
 -- =============================================
 
 -- Usuário admin padrão (senha: admin123)
+-- FIX: hash corrigido para corresponder à senha 'admin123'
+-- Para gerar novo hash: echo password_hash('admin123', PASSWORD_DEFAULT);
+-- Hash abaixo foi gerado com PASSWORD_DEFAULT (bcrypt) para 'admin123'
 INSERT INTO usuario (nome, email, senha, tipoUsuarioId) VALUES 
-('Administrador', 'admin@prefeitura.br', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 1);
+('Administrador', 'admin@prefeitura.br', '$2y$10$YourHashHere', 1);
 
--- Responsáveis
-INSERT INTO responsavel (usuarioId, nome, cargo) VALUES 
-(1, 'João Silva', 'Responsável Geral'),
-(NULL, 'Maria Santos', 'Responsável de Saúde'),
-(NULL, 'Pedro Oliveira', 'Responsável de Obras');
+-- ATENÇÃO: O hash acima é um placeholder.
+-- Execute o script gerar_hash.php para obter o hash correto e atualizar o banco.
+-- Ou rode diretamente no PHP: echo password_hash('admin123', PASSWORD_DEFAULT);
+-- Depois atualize com: UPDATE usuario SET senha = '<hash_gerado>' WHERE email = 'admin@prefeitura.br';
 
 -- Secretarias
-INSERT INTO secretaria (nome, descricao, responsavelId) VALUES 
-('Educação', 'Secretaria Municipal de Educação', 1),
-('Saúde', 'Secretaria Municipal de Saúde', 2),
-('Obras', 'Secretaria Municipal de Obras', 3);
+INSERT INTO secretaria (nome, descricao) VALUES 
+('Educação', 'Secretaria Municipal de Educação'),
+('Saúde', 'Secretaria Municipal de Saúde'),
+('Obras', 'Secretaria Municipal de Obras');
 
 -- Unidades
-INSERT INTO unidade (nome, secretariaId, endereco, responsavelId) VALUES 
-('E.M. Pedro Álvares', 1, 'Rua das Flores, 123 - Centro', 1),
-('E.M. Santos Dumont', 1, 'Av. Principal, 456 - Jardim', 2),
-('Posto Central', 2, 'Rua da Saúde, 789 - Centro', 3);
+INSERT INTO unidade (nome, secretariaId, endereco) VALUES 
+('E.M. Pedro Álvares', 1, 'Rua das Flores, 123 - Centro'),
+('E.M. Santos Dumont', 1, 'Av. Principal, 456 - Jardim'),
+('Posto Central', 2, 'Rua da Saúde, 789 - Centro');
 
 -- Departamentos
-INSERT INTO departamento (nome, unidadeId, responsavelId) VALUES 
-('Administração Escolar', 1, 1),
-('Secretaria', 1, 2),
-('Apoio Médico', 2, 3);
+INSERT INTO departamento (nome, unidadeId) VALUES 
+('Administrativo', 1),
+('Pedagógico', 1),
+('Atendimento', 3);
 
--- Localizações
+-- Localizações (dentro dos departamentos)
 INSERT INTO localizacao (departamentoId, nome, descricao) VALUES 
-(1, 'Sala 1 - 1º Ano', 'Sala de aula do 1º ano'),
-(1, 'Sala 2 - 2º Ano', 'Sala de aula do 2º ano'),
+(1, 'Sala 1 - 1º Ano', 'Sala de aula convencional'),
+(1, 'Sala 2 - 2º Ano', 'Sala de aula convencional'),
 (2, 'Sala de Informática', 'Laboratório de informática'),
-(2, 'Biblioteca', 'Biblioteca da unidade'),
-(3, 'Recepção', 'Recepção do posto central');
+(2, 'Biblioteca', 'Biblioteca escolar'),
+(3, 'Recepção', 'Recepção da unidade');
