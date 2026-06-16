@@ -21,4 +21,8 @@ COPY . /var/www/html/
 # Permissões
 RUN chown -R www-data:www-data /var/www/html
 
-EXPOSE 80
+# Configure Apache to listen on Railway's PORT (default 80 for local)
+RUN sed -i 's/Listen 80/Listen ${PORT}/g' /etc/apache2/ports.conf \
+    && sed -i 's/:80/:${PORT}/g' /etc/apache2/sites-available/000-default.conf
+
+CMD ["sh", "-c", "exec apache2-foreground"]
